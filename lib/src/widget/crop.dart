@@ -497,8 +497,8 @@ class _CropEditorState extends State<_CropEditor> {
       _cropRect.height * screenSizeRatio / currentScale,
     );
 
-    if (currentRect.width < 730) {
-      currentScale = (_cropRect.width * screenSizeRatio) / 735;
+    if (currentRect.width < 720) {
+      currentScale = (_cropRect.width * screenSizeRatio) / 723;
       currentScale = max(currentScale, 1.0);
 
       if (_scale != currentScale) {

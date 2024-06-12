@@ -8,8 +8,8 @@ import 'package:crop_your_image/src/widget/circle_crop_area_clipper.dart';
 import 'package:crop_your_image/src/widget/constants.dart';
 import 'package:crop_your_image/src/widget/rect_crop_area_clipper.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 
 typedef ViewportBasedRect = Rect;
 typedef ImageBasedRect = Rect;
@@ -483,6 +483,30 @@ class _CropEditorState extends State<_CropEditor> {
   }
 
   void _updateScale(ScaleUpdateDetails detail) {
+    final screenSizeRatio = calculator.screenSizeRatio(
+      _parsedImageDetail!,
+      _viewportSize,
+    );
+
+    double currentScale = _baseScale * detail.scale;
+
+    Rect currentRect = Rect.fromLTWH(
+      (_cropRect.left - _imageRect.left) * screenSizeRatio / currentScale,
+      (_cropRect.top - _imageRect.top) * screenSizeRatio / currentScale,
+      _cropRect.width * screenSizeRatio / currentScale,
+      _cropRect.height * screenSizeRatio / currentScale,
+    );
+
+    if (currentRect.width < 730) {
+      currentScale = (_cropRect.width * screenSizeRatio) / 735;
+      currentScale = max(currentScale, 1.0);
+
+      if (_scale != currentScale) {
+        _applyScale(currentScale, focalPoint: detail.localFocalPoint);
+      }
+      return;
+    }
+
     // move
     var movedLeft = _imageRect.left + detail.focalPointDelta.dx;
     if (movedLeft + _imageRect.width < _cropRect.right) {
